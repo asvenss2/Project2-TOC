@@ -29,15 +29,67 @@ class NTM_Tracer(TuringMachineSimulator):
 
             # TODO: STUDENT IMPLEMENTATION NEEDED
             # 1. Iterate through every config in current_level.
+            for config in current_level:
+                left, state, right = config
             # 2. Check if config is Accept (Stop and print success) [cite: 179]
+                if state == self.accept_state:
+                    print(f"String accepted in {depth} steps")
+                    accepted = True
+                    break
             # 3. Check if config is Reject (Stop this branch only) [cite: 181]
+                elif state == self.reject_state:
+                    continue
             # 4. If not Accept/Reject, find valid transitions in self.transitions.
+                current_symbol = right if right[0] else "_"
+                valid_trans = self.get_transitions(state, (current_symbol,))
             # 5. If no explicit transition exists, treat as implicit Reject.
+                if not valid_trans:
+                    continue
+                all_rejected = False
             # 6. Generate children configurations and append to next_level[cite: 148].
+                for t in valid_trans:
+                    nextState = t['next']
+                    writeSymbol = t['write'][0]
+                    move = t['move'][0]
+
+                    l, s, r = left, state, right
+
+                    if move == 'L':
+                        if r:
+                            r = writeSymbol + r[1:]
+                        else:
+                            r = writeSymbol
+                        if l:
+                            r = l[-1] + r
+                            l = l[:-1]
+                        else:
+                            r = "_" + r
+                            
+                    elif move == 'R':
+                        if r:
+                            r = writeSymbol + r[1:]
+                        else:
+                            r = writeSymbol
+                        if r:
+                            l = l + r[0] 
+                            r = r[1:]
+                        else:
+                            l = l + "_"  
+                            r = ""
+
+                    elif move == 'S':
+                        if r:
+                            r = writeSymbol + r[1:]
+                        else:
+                            r = writeSymbol
+                    
+                    next_level.append([l, nextState, r])
+                        
 
             # Placeholder for logic:
             if not next_level and all_rejected:
                 # TODO: Handle "String rejected" output [cite: 258]
+                print(f"String rejected in {depth} steps")
                 break
 
             tree.append(next_level)
