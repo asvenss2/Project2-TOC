@@ -36,10 +36,8 @@ class NTM_Tracer(TuringMachineSimulator):
                 if state == self.accept_state:
                     print(f"String accepted in {depth} steps")
                     accepted = True
-                    print(f"Machine: {self.machine_name}")
-                    print(f"Input String: {input_string}")
                     self.print_trace_path(config, tree, depth)
-                    break
+                    return
             # 3. Check if config is Reject (Stop this branch only) [cite: 181]
                 elif state == self.reject_state:
                     continue
@@ -126,9 +124,10 @@ class NTM_Tracer(TuringMachineSimulator):
         path.reverse()
 
         for level, pathNode in path:
+            print()
             print(f"Level: {level}")
-            for node in tree[level]:
-                print(node)
+            for l, s, r, p in tree[level]:
+                print(l, s, r)
 
 
 
