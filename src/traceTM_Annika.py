@@ -22,6 +22,8 @@ class NTM_Tracer(TuringMachineSimulator):
 
         depth = 0
         accepted = False
+        
+        transitionCount = 0
 
         while depth < max_depth and not accepted:
             current_level = tree[-1]
@@ -35,6 +37,7 @@ class NTM_Tracer(TuringMachineSimulator):
             # 2. Check if config is Accept (Stop and print success) [cite: 179]
                 if state == self.accept_state:
                     print(f"String accepted in {depth} steps")
+                    print(f"Transitions simulated: {transitionCount}")
                     accepted = True
                     self.print_trace_path(config, tree, depth)
                     return
@@ -53,6 +56,8 @@ class NTM_Tracer(TuringMachineSimulator):
                     nextState = t['next']
                     writeSymbol = t['write'][0]
                     move = t['move'][0]
+
+                    transitionCount += 1
 
                     l, s, r = left, state, right
 
@@ -93,6 +98,7 @@ class NTM_Tracer(TuringMachineSimulator):
             if not next_level and all_rejected:
                 # TODO: Handle "String rejected" output [cite: 258]
                 print(f"String rejected in {depth} steps")
+                print(f"Transitions simulated: {transitionCount}")
                 break
 
             tree.append(next_level)
